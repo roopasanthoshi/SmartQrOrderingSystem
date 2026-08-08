@@ -1,0 +1,308 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   KANCHI CAFE — PREMIUM DESIGN SYSTEM
+   8px spacing grid · 20px card radius · Playfair Display titles
+   ============================================================ */
+
+@layer base {
+  body {
+    @apply transition-colors duration-150;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 15px;
+    background-color: #F8F6F2;
+    color: #1F1F1F;
+  }
+
+  .dark body {
+    background-color: #180B04;
+    color: #FAF6EE;
+  }
+
+  h1, h2, h3, .font-serif {
+    font-family: 'Playfair Display', Georgia, Cambria, "Times New Roman", Times, serif;
+    font-weight: 700;
+    color: #3E2A1F;
+  }
+  .dark h1, .dark h2, .dark h3, .dark .font-serif {
+    color: #F3E5AB;
+  }
+  h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    color: #1F1F1F;
+  }
+  .dark h4, .dark h5, .dark h6 {
+    color: #FAF6EE;
+  }
+}
+
+@layer components {
+  .bg-white,
+  .card-premium {
+    border-radius: 20px !important;
+    box-shadow: 0 1px 2px rgba(31, 31, 31, 0.04), 0 8px 24px rgba(31, 31, 31, 0.05) !important;
+    border: 1px solid #ECE7DD !important;
+    background-color: #FFFFFF !important;
+    padding: 24px !important;
+    transition: box-shadow 0.2s ease, transform 0.2s ease !important;
+  }
+  .card-premium.card-tight {
+    padding: 16px !important;
+  }
+  .card-interactive:hover {
+    box-shadow: 0 4px 8px rgba(31, 31, 31, 0.05), 0 12px 28px rgba(31, 31, 31, 0.08) !important;
+  }
+
+  .dark .bg-white,
+  .dark .bg-cafe-900,
+  .dark .card-premium {
+    border-radius: 20px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28) !important;
+    border: 1px solid rgba(212, 175, 55, 0.1) !important;
+    background-color: #1e130c !important;
+  }
+
+  input, select, textarea {
+    border-radius: 12px !important;
+    border: 1px solid #ECE7DD !important;
+    padding: 0 16px !important;
+    height: 46px !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+    background-color: #FFFFFF !important;
+    color: #1F1F1F !important;
+    font-size: 15px !important;
+  }
+  textarea {
+    height: auto !important;
+    padding: 12px 16px !important;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: #D4AF37 !important;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.18) !important;
+    outline: none !important;
+  }
+  label {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #6B7280 !important;
+  }
+  .dark input, .dark select, .dark textarea {
+    background-color: #180B04 !important;
+    border-color: rgba(212, 175, 55, 0.15) !important;
+    color: #FAF6EE !important;
+  }
+  .dark label {
+    color: rgba(250, 246, 238, 0.55) !important;
+  }
+
+  /* Icon-prefixed inputs (search bars, login fields, etc.)
+     Guarantees left padding always clears the leading icon,
+     overriding the generic input padding rule above. */
+  input.icon-input {
+    padding-left: 44px !important;
+    height: 44px !important;
+  }
+  .icon-input-wrap {
+    position: relative !important;
+  }
+  .icon-input-wrap > svg.icon-input-icon {
+    position: absolute !important;
+    left: 16px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    pointer-events: none !important;
+  }
+
+  button {
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.15s ease !important;
+  }
+  button:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  .bg-gold-500,
+  button[type="submit"].bg-gold-500,
+  .btn-primary {
+    background: linear-gradient(135deg, #D9AC3D 0%, #B5872E 100%) !important;
+    border-radius: 12px !important;
+    color: #2B1812 !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    height: 44px !important;
+    padding: 0 20px !important;
+    box-shadow: 0 4px 14px rgba(212, 175, 55, 0.22) !important;
+    border: none !important;
+  }
+  .bg-gold-500:hover:not(:disabled),
+  button[type="submit"].bg-gold-500:hover:not(:disabled),
+  .btn-primary:hover:not(:disabled) {
+    box-shadow: 0 6px 18px rgba(212, 175, 55, 0.32) !important;
+    transform: translateY(-1px);
+  }
+
+  .badge-completed, .bg-green-500\/20, .bg-green-500\/10 {
+    background-color: rgba(22, 163, 74, 0.1) !important;
+    color: #16A34A !important;
+    border: 1px solid rgba(22, 163, 74, 0.2) !important;
+    font-weight: 600 !important;
+    border-radius: 9999px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+  }
+  .badge-preparing, .bg-orange-500\/20, .bg-amber-500\/20, .bg-amber-500\/10 {
+    background-color: rgba(212, 175, 55, 0.12) !important;
+    color: #9B7B27 !important;
+    border: 1px solid rgba(212, 175, 55, 0.25) !important;
+    font-weight: 600 !important;
+    border-radius: 9999px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+  }
+  .badge-pending, .bg-blue-500\/20, .bg-blue-500\/10 {
+    background-color: rgba(59, 130, 246, 0.1) !important;
+    color: #3B82F6 !important;
+    border: 1px solid rgba(59, 130, 246, 0.2) !important;
+    font-weight: 600 !important;
+    border-radius: 9999px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+  }
+  .badge-cancelled, .bg-red-500\/20, .bg-red-500\/10 {
+    background-color: rgba(220, 38, 38, 0.1) !important;
+    color: #DC2626 !important;
+    border: 1px solid rgba(220, 38, 38, 0.2) !important;
+    font-weight: 600 !important;
+    border-radius: 9999px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+  }
+
+  table thead th {
+    background-color: #F8F6F2 !important;
+    color: #3E2A1F !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    position: sticky;
+    top: 0;
+  }
+  table tbody tr {
+    transition: background-color 0.12s ease;
+  }
+  table tbody tr:hover {
+    background-color: #FDFBF7 !important;
+  }
+  .dark table thead th {
+    background-color: #180B04 !important;
+    color: #F3E5AB !important;
+  }
+  .dark table tbody tr:hover {
+    background-color: #24140A !important;
+  }
+}
+
+.dark .text-cafe-900,
+.dark .text-cafe-850,
+.dark .text-cafe-800,
+.dark .text-cafe-700,
+.dark .text-cafe-600 {
+  color: #FAF6EE !important;
+}
+.dark .text-cafe-500 {
+  color: rgba(250, 246, 238, 0.8) !important;
+}
+.dark .text-cafe-950 {
+  color: #FFFFFF !important;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.3);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.6);
+}
+
+/* ============================================================
+   ADMIN LOGIN UI REFINEMENTS (PADDING, READABILITY, ALIGNMENT)
+   ============================================================ */
+input.login-input {
+  padding-left: 48px !important;
+  height: 48px !important;
+  font-size: 14px !important;
+  color: #1F1F1F !important;
+}
+
+.dark input.login-input {
+  color: #FFFFFF !important;
+  background-color: #180B04 !important;
+}
+
+input.login-input::placeholder {
+  color: rgba(62, 42, 31, 0.6) !important;
+}
+
+.dark input.login-input::placeholder {
+  color: rgba(250, 246, 238, 0.55) !important;
+}
+
+label.login-label {
+  color: #3E2A1F !important;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+}
+
+.dark label.login-label {
+  color: #F3E5AB !important;
+}
+
+/* Scoped overrides to resolve cascade layers priority issues */
+input.icon-input {
+  padding-left: 48px !important;
+}
+
+/* WebKit Browser Autofill Overrides */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #1F1F1F !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover, 
+.dark input:-webkit-autofill:focus, 
+.dark input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #180B04 inset !important;
+  -webkit-text-fill-color: #FAF6EE !important;
+}
+
+
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-area, .print-area * {
+    visibility: visible;
+  }
+  .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}

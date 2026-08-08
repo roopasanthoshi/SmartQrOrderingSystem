@@ -1,0 +1,194 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String   @default("Cafe Admin")
+  role         String   @default("ADMIN")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model CafeSettings {
+  id                     String   @id @default(uuid())
+  name                   String   @default("Kanchi Cafe")
+  address                String   @default("Alkapuri Chourasta, Nagole")
+  phone                  String   @default("9000407970")
+  gst                    String   @default("36AFNFS9271D1ZJ")
+  upiId                  String   @default("8978882601@ybl")
+  logoUrl                String?
+  customerNotifDelayMin  Int      @default(20)
+  reminderIntervalMin    Int      @default(15)
+  autoCompleteTimeoutMin Int      @default(60)
+  enableGst              Boolean  @default(false)
+  gstPercentage          Float    @default(5.0)
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+}
+
+model PrinterSettings {
+  id                 String   @id @default(uuid())
+  printer1Name       String   @default("Kitchen Printer (Food)")
+  printer1Categories String   @default("IDLY SECTION,DOSA SECTION,SNACKS & VADA")
+  printer2Name       String   @default("Beverage Printer (Juices & Beverages)")
+  printer2Categories String   @default("JUICES & BEVERAGES")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Table {
+  id           String   @id @default(uuid())
+  tableNumber  Int      @unique
+  qrCodeUrl    String?
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  orders       Order[]
+}
+
+model Customer {
+  id          String   @id @default(uuid())
+  mobile      String   @unique
+  name        String
+  totalVisits Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  orders      Order[]
+  reviews     Review[]
+
+  @@index([mobile])
+}
+
+model Category {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  sortOrder Int        @default(0)
+  active    Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  items     MenuItem[]
+}
+
+model MenuItem {
+  id              String      @id @default(uuid())
+  name            String
+  description     String?
+  price           Float
+  categoryId      String
+  category        Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  imageUrl        String?
+  isAvailable     Boolean     @default(true)
+  isPopular       Boolean     @default(false)
+  isCoffeeOrJuice Boolean     @default(false)
+  sortOrder       Int         @default(0)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  orderItems      OrderItem[]
+
+  @@index([categoryId])
+  @@index([isCoffeeOrJuice])
+}
+
+model TodaysSpecial {
+  id          String   @id @default(uuid())
+  name        String
+  price       Float
+  description String?
+  imageUrl    String?
+  isAvailable Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isAvailable])
+}
+
+model Order {
+  id                           String      @id @default(uuid())
+  kotNumber                    String?     @unique
+  tableId                      String
+  table                        Table       @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  customerId                   String
+  customer                     Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  status                       String      @default("PENDING_APPROVAL")
+  paymentStatus                String      @default("PENDING")
+  rejectionReason              String?
+  rejectionCustomMsg           String?
+  subtotal                     Float
+  taxAmount                    Float       @default(0)
+  totalAmount                  Float
+  paymentMethod                String      @default("UPI")
+  paymentRef                   String?
+  paymentConfirmedAt           DateTime?
+  confirmedCollectedByCustomer Boolean     @default(false)
+  confirmedCollectedByAdmin    Boolean     @default(false)
+  lastNotifiedAt               DateTime?
+  createdAt                    DateTime    @default(now())
+  updatedAt                    DateTime    @updatedAt
+  items                        OrderItem[]
+  review                       Review?
+
+  @@index([tableId])
+  @@index([customerId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id              String    @id @default(uuid())
+  orderId         String
+  order           Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItemId      String?
+  menuItem        MenuItem? @relation(fields: [menuItemId], references: [id], onDelete: SetNull)
+  menuItemName    String
+  quantity        Int
+  unitPrice       Float
+  notes           String?
+  isCoffeeOrJuice Boolean   @default(false)
+
+  @@index([orderId])
+  @@index([menuItemId])
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  orderId    String   @unique
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  rating     Int
+  comment    String?
+  adminReply String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([rating])
+  @@index([customerId])
+}
+
+model ActivityLog {
+  id         String   @id @default(uuid())
+  action     String
+  details    String
+  ipAddress  String?
+  adminEmail String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model BackupHistory {
+  id           String   @id @default(uuid())
+  filename     String
+  fileSize     String
+  recordCounts String?
+  createdAt    DateTime @default(now())
+}
