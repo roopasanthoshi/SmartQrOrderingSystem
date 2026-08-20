@@ -2,6 +2,9 @@ import { Router } from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { v2 as cloudinary } from 'cloudinary';
+import { Readable } from 'stream';
+
 import { requireAdmin } from '../middleware/auth';
 import {
   loginAdmin,
@@ -169,20 +172,13 @@ router.post('/backups/restore', requireAdmin, restoreBackup);
 router.get('/search', globalSearch);
 
 // --- File Upload Setup & Routes ---
-const uploadsDir = path.join(__dirname, '../../uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadsDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  },
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
+const storage = multer.memoryStorage();
 
 const fileFilter = (req: any, file: any, cb: any) => {
   const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
@@ -199,17 +195,34 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
 });
 
-router.post('/upload', requireAdmin, upload.single('image'), (req, res) => {
+router.post('/upload', requireAdmin, upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ success: false, message: 'No file uploaded' });
     }
-    const protocol = req.protocol;
-    const host = req.get('host');
-    const imageUrl = `${protocol}://${host}/uploads/${req.file.filename}`;
-    return res.json({ success: true, imageUrl });
+
+    const uploadToCloudinary = (fileBuffer: Buffer) => {
+      return new Promise<any>((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder: 'kanchi_cafe',
+          },
+          (error, result) => {
+            if (error) {
+              return reject(error);
+            }
+            resolve(result);
+          }
+        );
+        Readable.from(fileBuffer).pipe(stream);
+      });
+    };
+
+    const result = await uploadToCloudinary(req.file.buffer);
+    return res.json({ success: true, imageUrl: result.secure_url });
   } catch (error: any) {
-    return res.status(500).json({ success: false, message: error.message });
+    console.error('Cloudinary Upload Error:', error);
+    return res.status(500).json({ success: false, message: error.message || 'Cloudinary upload failed' });
   }
 });
 
