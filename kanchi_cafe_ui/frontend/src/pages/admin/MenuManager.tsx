@@ -176,6 +176,37 @@ export const MenuManager: React.FC = () => {
   };
 
   // --- Independent Today's Special Handlers ---
+  const handleSpecialImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File is too large. Max size is 5MB.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    setUploading(true);
+    try {
+      const res = await api.post('/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      if (res.data.success && res.data.imageUrl) {
+        setSpecialForm((prev) => ({ ...prev, imageUrl: res.data.imageUrl }));
+      } else {
+        alert(res.data.message || 'Failed to upload image');
+      }
+    } catch (err: any) {
+      alert(err.response?.data?.message || err.message || 'Failed to upload image');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleSaveSpecial = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -343,8 +374,18 @@ export const MenuManager: React.FC = () => {
                 className="bg-cafe-950/90 border border-gold-500/30 p-3.5 rounded-2xl flex items-center justify-between gap-3 shadow-inner"
               >
                 <div className="flex items-center gap-2.5 truncate">
-                  <span className="text-gold-400 font-bold text-lg">⭐</span>
-                  <div className="truncate">
+                  {s.imageUrl ? (
+                    <img
+                      src={s.imageUrl}
+                      alt={s.name}
+                      className="w-10 h-10 object-cover rounded-xl border border-gold-500/20 flex-shrink-0"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-xl bg-cafe-900 text-gold-500 border border-gold-500/10 flex items-center justify-center flex-shrink-0">
+                      <Sparkles className="w-5 h-5 text-gold-500" />
+                    </div>
+                  )}
+                  <div className="truncate font-sans">
                     <h5 className="font-bold text-xs text-cream-100 truncate">{s.name}</h5>
                     {s.description && (
                       <p className="text-[11px] text-cream-200/60 truncate">{s.description}</p>
@@ -589,6 +630,37 @@ export const MenuManager: React.FC = () => {
                     onChange={(e) => setSpecialForm({ ...specialForm, imageUrl: e.target.value })}
                     className="w-full bg-cafe-950 border border-gold-500/30 rounded-xl p-2.5 text-cream-100 outline-none"
                   />
+                  <div className="mt-2">
+                    <label className="block text-gold-300 font-semibold mb-1 font-sans">Or Upload Image File</label>
+                    <input
+                      type="file"
+                      accept="image/png, image/jpeg, image/jpg, image/webp"
+                      onChange={handleSpecialImageUpload}
+                      disabled={uploading}
+                      className="w-full bg-cafe-950 border border-gold-500/30 rounded-xl p-1.5 text-cream-100 outline-none text-xs cursor-pointer file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-gold-500 file:text-cafe-950 hover:file:bg-gold-600 disabled:opacity-50"
+                    />
+                    {uploading && (
+                      <span className="text-[10px] text-gold-400 mt-1 block font-sans">Uploading image...</span>
+                    )}
+                    {specialForm.imageUrl && !uploading && (
+                      <div className="mt-2 flex items-center gap-2">
+                        <span className="text-[10px] text-cream-200/60 font-sans">Preview:</span>
+                        <img
+                          src={specialForm.imageUrl}
+                          alt="Preview"
+                          className="w-10 h-10 rounded-lg object-cover border border-gold-500/30"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setSpecialForm({ ...specialForm, imageUrl: '' })}
+                          className="p-1 bg-red-500/20 text-red-400 rounded-md hover:bg-red-500/30 transition flex items-center justify-center"
+                          title="Remove Image"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 

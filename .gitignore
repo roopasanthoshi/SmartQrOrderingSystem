@@ -42,3 +42,8 @@ Thumbs.db
 # IDE local configuration
 .agents/
 .gemini/
+
+# Local uploads and test files
+kanchi_cafe_ui/backend/uploads/
+test.png
+

@@ -151,6 +151,11 @@ export const CustomerMenu: React.FC = () => {
           </span>
         </div>
 
+        {/* Disclaimer Note */}
+        <p className="px-1 text-[11px] text-cafe-700 dark:text-cafe-300 italic -mt-2">
+          Note: Images are for visual representation only. Actual dishes may vary in appearance.
+        </p>
+
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 py-4">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
