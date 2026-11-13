@@ -1,23 +1,39 @@
 {
-  "version": 2,
-  "buildCommand": "npm run build",
-  "outputDirectory": "kanchi_cafe_ui/frontend/dist",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "backend": {
+      "root": "kanchi_cafe_ui/backend",
+      "framework": "express"
+    },
+    "frontend": {
+      "root": "kanchi_cafe_ui/frontend",
+      "framework": "vite"
+    }
+  },
   "rewrites": [
     {
       "source": "/api",
-      "destination": "/api/index"
+      "destination": {
+        "service": "backend"
+      }
     },
     {
       "source": "/api/(.*)",
-      "destination": "/api/index"
+      "destination": {
+        "service": "backend"
+      }
     },
     {
       "source": "/health",
-      "destination": "/api/index"
+      "destination": {
+        "service": "backend"
+      }
     },
     {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": {
+        "service": "frontend"
+      }
     }
   ]
 }
