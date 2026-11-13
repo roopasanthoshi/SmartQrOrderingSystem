@@ -1,0 +1,17 @@
+{
+  "name": "kanchi-cafe",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "kanchi_cafe_ui/backend",
+    "kanchi_cafe_ui/frontend"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace=kanchi-cafe-backend && npm run build --workspace=kanchi-cafe-frontend",
+    "build:backend": "npm run build --workspace=kanchi-cafe-backend",
+    "build:frontend": "npm run build --workspace=kanchi-cafe-frontend",
+    "postinstall": "npm run prisma:generate --workspace=kanchi-cafe-backend",
+    "dev:backend": "npm run dev --workspace=kanchi-cafe-backend",
+    "dev:frontend": "npm run dev --workspace=kanchi-cafe-frontend"
+  }
+}
